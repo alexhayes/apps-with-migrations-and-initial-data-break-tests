@@ -6,6 +6,8 @@ According to [the docs](https://docs.djangoproject.com/en/dev/howto/initial-data
 
 I expect and assume that this is true for running tests also, however what happens is that the tests attempt to load the initial data which results in a `django.db.utils.OperationalError` (essentially it attempts to load the data but the tables don't exist).
 
+I've created [ticket #24023](https://code.djangoproject.com/ticket/24023#ticket) for this issue on djangoproject.com.
+
 ## Install
 
 ```bash
