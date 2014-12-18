@@ -1,10 +1,10 @@
-# manage.py test attempts to apply initial_data for apps that have migrations
+# Django 1.7 apps with initial_data and migrations break test runner
 
-It appears that in Django 1.7.1 when you run `manage.py test` it attempts to `loaddata` for apps with `initial_data.*` prior to the migrations for those apps being run.
+It appears that in Django 1.7.1 when you run `manage.py test` it attempts to `loaddata` for apps with `initial_data.*` *prior* to the migrations for those apps being run.
 
-According to [the docs](https://docs.djangoproject.com/en/dev/howto/initial-data/#automatically-loading-initial-data-fixtures) the loading of `initial_data.*` files has been deprecated in 1.7 and it states that you should "consider doing it in a data migration.".
+According to [the docs](https://docs.djangoproject.com/en/dev/howto/initial-data/#automatically-loading-initial-data-fixtures) the loading of `initial_data.*` files has been deprecated in 1.7.
 
-To me, this implies that it should work and at the very least not break the running of tests. 
+I expect and assume that this is true for running tests also, however what happens is that the tests attempt to load the initial data which results in a `django.db.utils.OperationalError` (essentially it attempts to load the data but the tables don't exist).
 
 ## Install
 
@@ -113,3 +113,13 @@ Traceback (most recent call last):
     return Database.Cursor.execute(self, query, params)
 django.db.utils.OperationalError: Problem installing fixture '/path/to/apps-with-migrations-and-initial-data-break-tests/bar/fixtures/initial_data.json': Could not load bar.Bar(pk=1): no such table: bar_bar
 ```
+
+I'm not really sure what's going wrong here as can be seen in the traceback that an attempt to call the management command `migrate` is performed before the `loaddata`, implying that the migrations are being run but aren't being applied... A little odd, hence my emphasis in the first paragraph around the word *prior*.
+
+## What I'd expect
+
+I would expect that the tests completley ignore the `initial_data.*` files for apps that have migrations and that I have to create a data migration.
+
+## Author
+
+Alex Hayes <alex@alution.com>
