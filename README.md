@@ -116,6 +116,14 @@ django.db.utils.OperationalError: Problem installing fixture '/path/to/apps-with
 
 I'm not really sure what's going wrong here as can be seen in the traceback that an attempt to call the management command `migrate` is performed before the `loaddata`, implying that the migrations are being run but aren't being applied... A little odd, hence my emphasis in the first paragraph around the word *prior*.
 
+## Remove the initial_data file
+
+You can remove/reset the intial_data file so that the tests will run again with the following;
+
+```bash
+./manage.py remove_initial_data
+```
+
 ## What I'd expect
 
 I would expect that the tests completley ignore the `initial_data.*` files for apps that have migrations and that I have to create a data migration.
